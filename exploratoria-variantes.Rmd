@@ -348,6 +348,19 @@ with(dados,
 # Análise fixado variantes e evolução
 
 ```{r}
-
+dados %>% 
+  ggplot(aes(x = variante, fill = evolucao)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~vacinacov_variante) + 
+  scale_fill_viridis_d()
 ```
+
+```{r}
+dados %>% 
+  ggplot(aes(x = variante, fill = evolucao)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~vacina_cov_sel) + 
+  scale_fill_viridis_d()
+```
+
 
