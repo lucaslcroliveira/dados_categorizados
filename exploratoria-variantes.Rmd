@@ -253,9 +253,9 @@ Nesse caso fica claro que após um certo período do início da vacinação tive
 ```{r}
 dados %>%
   filter(evolucao == "obito") %>% 
-  group_by(dt_evoluca) %>%
+  group_by(DT_SIN_PRI) %>%
   summarise(obitos = n()) %>%
-  ggplot(aes(dt_evoluca, obitos)) +
+  ggplot(aes(DT_SIN_PRI, obitos)) +
   geom_line() +
   geom_vline(xintercept = in_gama,
              colour = "green4",
@@ -321,46 +321,64 @@ with(dados,
 
 
 ```{r}
-with(dados, 
+dados_var <- dados %>% 
+  filter(variante %in% c("gama", "original") &
+         !is.na(evolucao))
+
+dados_var$variante <- factor(dados_var$variante,
+                             levels = c("original", "gama"))
+
+with(dados_var, 
      print(ctable(x = variante, 
-                  y = vacinacov_variante, 
+                  y = evolucao, 
                   prop     = 'r',
                   totals   = FALSE, 
                   headings = FALSE,
-                  chisq = TRUE),
+                  chisq = TRUE,
+                  OR = TRUE,
+                  RR = TRUE),
            method = "render")
 )
 ```
 
-
 ```{r}
-with(dados, 
+dados_var <- dados %>% 
+  filter(variante %in% c("gama", "delta") &
+         !is.na(evolucao))
+
+dados_var$variante <- factor(dados_var$variante,
+                             levels = c("delta", "gama"))
+
+with(dados_var, 
      print(ctable(x = variante, 
-                  y = vacina_cov_sel, 
+                  y = evolucao, 
                   prop     = 'r',
                   totals   = FALSE, 
                   headings = FALSE,
-                  chisq = TRUE),
+                  chisq = TRUE,
+                  OR = TRUE,
+                  RR = TRUE),
            method = "render")
 )
 ```
 
-# Análise fixado variantes e evolução
-
 ```{r}
-dados %>% 
-  ggplot(aes(x = variante, fill = evolucao)) +
-  geom_bar(position = "dodge") +
-  facet_wrap(~vacinacov_variante) + 
-  scale_fill_viridis_d()
+dados_var <- dados %>% 
+  filter(variante %in% c("gama", "omicron") &
+         !is.na(evolucao))
+
+dados_var$variante <- factor(dados_var$variante,
+                             levels = c("omicron", "gama"))
+
+with(dados_var, 
+     print(ctable(x = variante, 
+                  y = evolucao, 
+                  prop     = 'r',
+                  totals   = FALSE, 
+                  headings = FALSE,
+                  chisq = TRUE,
+                  OR = TRUE,
+                  RR = TRUE),
+           method = "render")
+)
 ```
-
-```{r}
-dados %>% 
-  ggplot(aes(x = variante, fill = evolucao)) +
-  geom_bar(position = "dodge") +
-  facet_wrap(~vacina_cov_sel) + 
-  scale_fill_viridis_d()
-```
-
-
