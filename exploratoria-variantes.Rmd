@@ -2,8 +2,10 @@
 title: "Análise exploratória sobre variantes"
 author: "Elias, Lucas e Ornella"
 date: '2022-07-02'
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -127,7 +129,9 @@ dados$vacinacov_variante <-
   as.factor(dados$vacina_cov2 * dados$variante2)
 ```
 
-# Gráfico de frequência de casos para cada uma das variantes
+# Gráficos de frequência 
+
+## Casos para cada uma das variantes
 
 ```{r}
 dados %>% 
@@ -138,7 +142,7 @@ theme(legend.position = "none")
 
 Podemos ver que, para a população de gestantes se puérperas, a variante gama foi a que teve maior número de casos. No tempo podemos tirar algumas informaçõesmais concretas sobre essa questão. Para isso iremos gerar o gráfico a seguir.
 
-# Gráfico de frequência de casos para cada uma das variantes
+## Óbitos para cada uma das variantes
 
 ```{r}
 dados %>% 
@@ -298,87 +302,105 @@ dados %>%
     geom = "label"
   ) +
   labs(
-    x = "Data de evolução a óbito",
+    x = "Data do primeiro sintoma",
     y = "N° de óbitos diários"
   )
 ```
 
-Podemos ver que temos um comportamento que segue um pouco o número de casos, sendo a única excessão a variante omicron pois s óbitos não seguem o pico de casos.
+Podemos ver que temos um comportamento que tem uma relação à evolução no tempo de número de casos, sendo a excessão mais clara a variante omicron pois os óbitos não seguem o pico de casos, tendo como possível explicação a maior quantidade de gestantes e puérperas vacinadas. 
 
 # Tabela cruzada
 
+Aqui podemos ver as tabelas cruzadas tendo como covariáveis as variantes e como variável resposta a evolução dos casos.
+
 ```{r}
-with(dados, 
-     print(ctable(x = variante, 
-                  y = evolucao, 
-                  prop     = 'r',
-                  totals   = FALSE, 
-                  headings = FALSE,
-                  chisq = TRUE),
-           method = "render")
+with(
+  dados,
+  ctable(
+    x = variante,
+    y = evolucao,
+    prop     = 'r',
+    totals   = FALSE,
+    headings = FALSE,
+    chisq = TRUE
+  )
 )
 ```
 
+Pela tabela acima vemos que a variante gama parece ter sido a pior variante para gestantes e puérperas. Vamos fazer algumas análises fixando a variante gama e comparando-a com as demais variantes. 
+
+## Gama e Original
 
 ```{r}
-dados_var <- dados %>% 
+dados_var <- dados %>%
   filter(variante %in% c("gama", "original") &
-         !is.na(evolucao))
+           !is.na(evolucao))
 
 dados_var$variante <- factor(dados_var$variante,
                              levels = c("original", "gama"))
 
-with(dados_var, 
-     print(ctable(x = variante, 
-                  y = evolucao, 
-                  prop     = 'r',
-                  totals   = FALSE, 
-                  headings = FALSE,
-                  chisq = TRUE,
-                  OR = TRUE,
-                  RR = TRUE),
-           method = "render")
+with(
+  dados_var,
+  ctable(
+    x = variante,
+    y = evolucao,
+    prop     = 'r',
+    totals   = FALSE,
+    headings = FALSE,
+    chisq = TRUE,
+    OR = TRUE
+  )
 )
 ```
 
+## Gama e Delta
+
 ```{r}
-dados_var <- dados %>% 
+dados_var <- dados %>%
   filter(variante %in% c("gama", "delta") &
-         !is.na(evolucao))
+           !is.na(evolucao))
 
 dados_var$variante <- factor(dados_var$variante,
                              levels = c("delta", "gama"))
 
-with(dados_var, 
-     print(ctable(x = variante, 
-                  y = evolucao, 
-                  prop     = 'r',
-                  totals   = FALSE, 
-                  headings = FALSE,
-                  chisq = TRUE,
-                  OR = TRUE,
-                  RR = TRUE),
-           method = "render")
+with(
+  dados_var,
+  ctable(
+    x = variante,
+    y = evolucao,
+    prop     = 'r',
+    totals   = FALSE,
+    headings = FALSE,
+    chisq = TRUE,
+    OR = TRUE
+  )
 )
 ```
 
+## Gama e Omicron
+
 ```{r}
-dados_var <- dados %>% 
+dados_var <- dados %>%
   filter(variante %in% c("gama", "omicron") &
-         !is.na(evolucao))
+           !is.na(evolucao))
 
 dados_var$variante <- factor(dados_var$variante,
                              levels = c("omicron", "gama"))
 
-with(dados_var, 
-     print(ctable(x = variante, 
-                  y = evolucao, 
-                  prop     = 'r',
-                  totals   = FALSE, 
-                  headings = FALSE,
-                  chisq = TRUE,
-                  OR = TRUE,
-                  RR = TRUE),
-           method = "render")
+with(
+  dados_var,
+  ctable(
+    x = variante,
+    y = evolucao,
+    prop     = 'r',
+    totals   = FALSE,
+    headings = FALSE,
+    chisq = TRUE,
+    OR = TRUE
+  )
 )
 ```
+
+## Conclusão
+
+Vemos que para todos os casos acima temos Odds Ratio (OR) acima de 1 para as variantes quando comparadas a gama, ou seja, temos que no período das variantes original, delta e omicron as gestantes e puérperas tinham 2.08, 2.34 e 8.65 mais chances de se curar, respectivamente, se comparadas com o período da variante gama.
