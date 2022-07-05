@@ -16,6 +16,7 @@ library(tidyverse)
 library(lubridate)
 library(patchwork)
 library(summarytools)
+library(modelsummary)
 theme_set(theme_minimal())
 ```
 
@@ -127,6 +128,34 @@ dados <- dados %>%
 
 dados$vacinacov_variante <-
   as.factor(dados$vacina_cov2 * dados$variante2)
+```
+
+# Informações resumo das variáveis principais
+
+```{r}
+dados %>%
+  select(
+    variante,
+    vacina_cov_sel,
+    evolucao,
+    suport_ven,
+    uti,
+    inf_inter,
+    asma,
+    cardiopati,
+    hematologi,
+    diabetes,
+    pneumopati,
+    imunodepre,
+    obesidade,
+    renal
+  ) %>%
+  dfSummary(
+    .,
+    graph.magnif = 0.85,
+    varnumbers = FALSE,
+    valid.col    = FALSE
+  )
 ```
 
 # Gráficos de frequência 
