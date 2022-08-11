@@ -338,6 +338,72 @@ dados %>%
 
 Podemos ver que temos um comportamento que tem uma relação à evolução no tempo de número de casos, sendo a excessão mais clara a variante omicron pois os óbitos não seguem o pico de casos, tendo como possível explicação a maior quantidade de gestantes e puérperas vacinadas. 
 
+## Evolução no tempo - taxa de letalidade
+
+```{r}
+dados_obitos <- dados %>%
+  filter(evolucao == "obito") %>% 
+  group_by(DT_SIN_PRI) %>%
+  summarise(obitos = n())
+
+dados_casos <- dados %>%
+  group_by(DT_SIN_PRI) %>%
+  summarise(casos = n())
+
+dados_tl <- left_join(dados_casos, dados_obitos, by = "DT_SIN_PRI") %>% 
+  mutate(obitos = ifelse(is.na(obitos), 0, obitos),
+         taxa_letalidade = obitos/casos)
+
+dados_tl %>%
+  ggplot(aes(DT_SIN_PRI, taxa_letalidade)) +
+  geom_line() +
+  geom_vline(xintercept = in_gama,
+             colour = "green4",
+             linetype = 2) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  annotate(
+    x = in_gama,
+    y = -Inf,
+    label = "Gama",
+    vjust = -0.5,
+    geom = "label"
+  ) +
+  geom_vline(xintercept = in_delta,
+             colour = "purple4",
+             linetype = 3) +
+  annotate(
+    x = in_delta,
+    y = +Inf,
+    label = "Delta",
+    vjust = 2,
+    geom = "label"
+  ) +
+  geom_vline(xintercept = in_omicron,
+             colour = "yellow4",
+             linetype = 4) +
+  annotate(
+    x = in_omicron,
+    y = +Inf,
+    label = "Omicron",
+    vjust = 2,
+    geom = "label"
+  )  +
+  geom_vline(xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
+             colour = "green4",
+             linetype = 5) +
+  annotate(
+    x = as.Date("01-05-2021", format = "%d-%m-%Y"),
+    y = -Inf,
+    label = "Vacinação",
+    vjust = -0.5,
+    geom = "label"
+  ) +
+  labs(
+    x = "Data do primeiro sintoma",
+    y = "Taxa de letalidade"
+  )
+```
+
 # Tabela cruzada
 
 Aqui podemos ver as tabelas cruzadas tendo como covariáveis as variantes e como variável resposta a evolução dos casos.
