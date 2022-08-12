@@ -1,0 +1,315 @@
+---
+title: "Exercício extra"
+author: "Lucas L Oliveira"
+date: "2022-07-26"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+# Desenvolvimento
+
+A tabela que temos para o desenvolvimento da questão segue abaixo:
+
+```{r}
+library(vcdExtra)
+library(hnp)
+library(MASS)
+library(ggfortify)
+
+ar <-
+  c(
+    rep("Baixa", 6),
+    rep("Alta", 6),
+    rep("Baixa", 6),
+    rep("Alta", 6),
+    rep("Baixa", 6),
+    rep("Alta", 6),
+    rep("Baixa", 6),
+    rep("Alta", 6)
+  )
+trabalho <-
+  c(
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3),
+    rep("Não", 3),
+    rep("Sim", 3)
+  )
+fumo <-
+  c(
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim",
+    "Não",
+    "Ex",
+    "Sim"
+  )
+count <-
+  c(
+    158,
+    167,
+    307,
+    26,
+    38,
+    94,
+    94,
+    67,
+    184,
+    32,
+    39,
+    77,
+    9,
+    19,
+    102,
+    5,
+    12,
+    48,
+    7,
+    8,
+    65,
+    3,
+    11,
+    48,
+    5,
+    5,
+    83,
+    5,
+    4,
+    46,
+    5,
+    4,
+    33,
+    6,
+    4,
+    39,
+    0,
+    3,
+    68,
+    1,
+    4,
+    60,
+    1,
+    3,
+    36,
+    1,
+    2,
+    51
+  )
+nivel <- c(rep(1, 12), rep(2, 12), rep(3, 12), rep(4, 12))
+
+dados <-
+  data.frame(
+    "poluicao_do_ar" = factor(ar, levels = c("Baixa", "Alta")),
+    "poluicao_no_trabalho" = factor(trabalho, levels = c("Não", "Sim")),
+    "status_fumo" = factor(fumo, levels = c("Não", "Ex", "Sim")),
+    "nivel_da_doenca" = nivel,
+    "Count" = count
+  )
+
+dadostable <-
+  xtabs(Count ~ poluicao_do_ar + poluicao_no_trabalho + status_fumo + nivel_da_doenca,
+        data = dados)
+structable(nivel_da_doenca ~ poluicao_do_ar + poluicao_no_trabalho + status_fumo,
+           dadostable)
+```
+
+Como variável resposta temos o nível da doença em que seus níveis correspondem a:
+
+- **1:** Sem sintomas;
+- **2:** Tosse por menos que 3 meses;
+- **3:** Tosse por mais que 3 meses ao ano;
+- **4:** Tosse e outros sintomas por mais que 3 meses ao ano.
+
+Claramente estamos lidando com uma variável resposta ordinal e isso deve ser incorporado ao modelo que será o logit cumulativo. Abaixo temos os resultados do modelo estimado.
+
+```{r}
+ar = c(
+  rep('Baixa', 172),
+  rep('Baixa', 194),
+  rep('Baixa', 560),
+  rep('Baixa', 37),
+  rep('Baixa', 58),
+  rep('Baixa', 248),
+  rep('Alta', 107),
+  rep('Alta', 82),
+  rep('Alta', 318),
+  rep('Alta', 42),
+  rep('Alta', 56),
+  rep('Alta', 215)
+)
+
+trabalho = c(
+  rep('Não', 172),
+  rep('Não', 194),
+  rep('Não', 560),
+  rep('Sim', 37),
+  rep('Sim', 58),
+  rep('Sim', 248),
+  rep('Não', 107),
+  rep('Não', 82),
+  rep('Não', 318),
+  rep('Sim', 42),
+  rep('Sim', 56),
+  rep('Sim', 215)
+)
+
+fumo = c(
+  rep('Não', 172),
+  rep('Ex', 194),
+  rep('Sim', 560),
+  rep('Não', 37),
+  rep('Ex', 58),
+  rep('Sim', 248),
+  rep('Não', 107),
+  rep('Ex', 82),
+  rep('Sim', 318),
+  rep('Não', 42),
+  rep('Ex', 56),
+  rep('Sim', 215)
+)
+
+nivel = c(
+  rep('1', 158),
+  rep('2', 9),
+  rep('3', 5),
+  rep('4', 0),
+  rep('1', 167),
+  rep('2', 19),
+  rep('3', 5),
+  rep('4', 3),
+  rep('1', 307),
+  rep('2', 102),
+  rep('3', 83),
+  rep('4', 68),
+  rep('1', 26),
+  rep('2', 5),
+  rep('3', 5),
+  rep('4', 1),
+  rep('1', 38),
+  rep('2', 12),
+  rep('3', 4),
+  rep('4', 4),
+  rep('1', 94),
+  rep('2', 48),
+  rep('3', 46),
+  rep('4', 60),
+  rep('1', 94),
+  rep('2', 7),
+  rep('3', 5),
+  rep('4', 1),
+  rep('1', 67),
+  rep('2', 8),
+  rep('3', 4),
+  rep('4', 3),
+  rep('1', 184),
+  rep('2', 65),
+  rep('3', 33),
+  rep('4', 36),
+  rep('1', 32),
+  rep('2', 3),
+  rep('3', 6),
+  rep('4', 1),
+  rep('1', 39),
+  rep('2', 11),
+  rep('3', 4),
+  rep('4', 2),
+  rep('1', 77),
+  rep('2', 48),
+  rep('3', 39),
+  rep('4', 51)
+)
+
+dados <-
+  data.frame(
+    "poluicao_do_ar" = factor(ar, levels = c("Baixa", "Alta")),
+    "poluicao_no_trabalho" = factor(trabalho, levels = c("Não", "Sim")),
+    "status_fumo" = factor(fumo, levels = c("Não", "Ex", "Sim")),
+    "nivel_da_doenca" = nivel
+  )
+
+m <-
+  polr(factor(nivel_da_doenca) ~ poluicao_do_ar + poluicao_no_trabalho + status_fumo,
+       data = dados,
+       Hess = TRUE)
+
+m
+```
+
+Podemos ver acima quais são os interceptos e quais são as variáveis para os nossos modelos. Lembrando que a definição do modelo se dá por $$log\left[\frac{P(Y\leq j)}{P(Y>j)}\right].$$ Dado isso, podemos tirar algumas conclusões.
+
+Analisando os coeficientes podemos ver que:
+
+- Poluição alta do ar tem coeficiente menor que zero e isso implica que ele reduz a chance da doença estar em nível mais avançado. Por outro lado, a chance da poluição baixa é de $\frac{1}{exp\{-0.03930433\}} = 1.040087$ vezes mais que o fato da poluição ser alta e nesse caso temos uma diferença bem pequena de um fator para outro, indicando que pode não haver tanto impacto da poluição do ar no resultado do nível da doença;
+
+- Poluição no trabalho tem coeficiente maior que zero indicando um possível impacto no nível da doença. Temos que $exp\{0.86476854\} = 2.374456$ poluição no trabalho realmente tem um impacto no nível da doença respiratória crônica;
+
+- No mais, temos o fato de ser ex fumante com $exp\{0.40000636\} = 1.491834$ chances de ter complicações respiratórias mais graves que um não fumante e o fato de ser fumante ativo com $exp\{1.85268636\} = 6.376927$ mais chances de ter complicações respiratórias que um não fumante;
+
+- Por fim, analisando os interceptos podemos concluir que o perfil que temos é poluição do ar baixa, sem poluição no trabalho e não sendo fumante. Com isso, podemos concluir que esse perfil tem $exp\{2.088417\} = 8.072127$ mais chances de ter doenças no primeiro nível que nos níveis 2, 3 ou 4; tem $exp\{2.969625\} = 19.48461$ mais chances de ter a doença respiratória crônica nos níveis 1 ou 2 que no nível 3 ou 4; tem $exp\{3.893834\} = 49.09877$ mais chances de ter doenças respiratória crônica nos níveis 1, 2 ou 3 que no nível 4.
+
+# Diagnóstico
+
+Para dignóstico, podemos analisar a existência de multicolineariedade do modelo. Para VIF podemos ver o resultado abaixo.
+
+```{r}
+car::vif(m)
+```
+temos indicação da presença de multicolineriedade quando VIF maior que 10 que não é o caso do nosso modelo atual.
