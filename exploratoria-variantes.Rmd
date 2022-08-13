@@ -6,7 +6,7 @@ output:
   pdf_document: default
   html_document: default
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -17,6 +17,9 @@ library(lubridate)
 library(patchwork)
 library(summarytools)
 library(modelsummary)
+library(glmtoolbox)
+library(hnp)
+library(LDdiag)
 theme_set(theme_minimal())
 ```
 
@@ -499,3 +502,160 @@ with(
 ## Conclusão
 
 Vemos que para todos os casos acima temos Odds Ratio (OR) acima de 1 para as variantes quando comparadas a gama, ou seja, temos que no período das variantes original, delta e omicron as gestantes e puérperas tinham 2.08, 2.34 e 8.65 mais chances de se curar, respectivamente, se comparadas com o período da variante gama.
+
+
+## Modelos
+
+### Evolução
+
+```{r}
+dados$evolucao <- as.factor(dados$evolucao)
+mod1 <- glm(evolucao~vacina_cov+variante,family = "binomial",data=dados)
+summary(mod1)
+```
+```{r}
+hltest(mod1) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod1) # Teste de ligação
+```
+```{r}
+hnp(mod1)
+```
+
+### Uti
+
+```{r}
+dados$uti <- as.factor(dados$uti)
+mod2 <- glm(uti~vacina_cov+variante,family = "binomial",data=dados)
+summary(mod2)
+```
+
+```{r}
+hltest(mod2) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod2) # Teste de ligação
+```
+
+```{r}
+hnp(mod2)
+```
+
+
+### Suporte ventilatório
+
+```{r}
+dados$suport_ven <- as.factor(dados$suport_ven)
+mod3 <- glm(suport_ven ~vacina_cov+variante,family = "binomial",data=dados)
+summary(mod3)
+```
+
+```{r}
+hltest(mod3) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod3) # Teste de ligação
+```
+
+```{r}
+hnp(mod3)
+```
+
+
+### Febre
+
+```{r}
+dados$febre <- as.factor(dados$febre)
+mod4 <- glm(febre ~ vacina_cov+variante,family = "binomial",data=dados)
+summary(mod4)
+```
+
+```{r}
+hltest(mod4) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod4) # Teste de ligação
+```
+
+```{r}
+hnp(mod4)
+```
+
+### Fadiga
+
+```{r}
+dados$fadiga <- as.factor(dados$fadiga)
+mod5 <- glm(fadiga ~ vacina_cov+variante,family = "binomial",data=dados)
+summary(mod5)
+```
+
+```{r}
+hltest(mod5) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod5) # Teste de ligação
+```
+
+```{r}
+hnp(mod5)
+```
+
+### Tosse
+
+```{r}
+dados$tosse <- as.factor(dados$tosse)
+mod6 <- glm(tosse ~ vacina_cov+variante,family = "binomial",data=dados)
+summary(mod6)
+```
+
+```{r}
+hltest(mod6) #Teste de Hosmer e Lemeshow
+```
+
+```{r}
+LDdiag::pregibon.glm(mod6) # Teste de ligação
+```
+
+```{r}
+hnp(mod6)
+```
+
+<!-- ## Modelo Log-linear -->
+
+<!-- ### Evolucao  -->
+
+<!-- #### Saturado -->
+<!-- ```{r} -->
+<!-- table1 <- dados %>% dplyr::select(fadiga,vacina_cov,variante) %>% group_by(fadiga,vacina_cov,variante) %>% summarise(Freq=n()) %>% drop_na() -->
+
+<!-- mod1 <- glm(Freq~fadiga+vacina_cov+variante+fadiga*vacina_cov+fadiga*variante+variante+vacina_cov,data=table1,family="poisson") ; summary(mod1) -->
+
+<!-- mod1 <- glm(Freq~fadiga+vacina_cov+variante+fadiga*vacina_cov+fadiga*variante+variante*vacina_cov,data=table1,family="poisson") ; summary(mod1) -->
+<!-- ``` -->
+
+<!-- #### Independencia Completa -->
+
+<!-- ```{r} -->
+<!-- mod2 <- glm(Freq~evolucao+vacina_cov+variante,data=table1,family="poisson") ; summary(mod2) -->
+<!-- mod2$dev/13 -->
+<!-- ``` -->
+<!-- #### Independencia Conjunta -->
+
+<!-- ```{r} -->
+<!-- mod3 <- glm(Freq~evolucao+vacina_cov+variante+evolucao*vacina_cov,data=table1,family="poisson") ; summary(mod3) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- mod4 <- glm(Freq~evolucao+vacina_cov+variante+variante*vacina_cov,data=table1,family="poisson") ; summary(mod4) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- mod5 <- glm(Freq~evolucao+vacina_cov+variante+variante*evolucao,data=table1,family="poisson") ; summary(mod5) -->
+<!-- ``` -->
+
