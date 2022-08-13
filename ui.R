@@ -19,7 +19,12 @@ navbarPage(
             "var_resposta",
             "Selecione a variável resposta:",
             c("Casos",
-              "Óbitos")
+              "Óbitos",
+              "Suporte ventilatório",
+              "UTI",
+              "Febre",
+              "Tosse",
+              "Fadiga")
           )
         ),
         mainPanel(
@@ -32,6 +37,10 @@ navbarPage(
             tabPanel(
               "Série",
               plotOutput("serie", width = "100%", height = "550px")
+            ),
+            tabPanel(
+              "Vacinados x Não vacinados",
+              highcharter::highchartOutput("prop", height = "550px")
             )
           )
         )

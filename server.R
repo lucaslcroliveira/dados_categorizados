@@ -4,21 +4,11 @@ library(tidyverse)
 library(xtable)
 library(knitr)
 library(patchwork)
+library(highcharter)
 
 function(input, output) {
   output$barplot <- renderPlot({
-    if(input$var_resposta == "Casos"){
-      dados %>% 
-        ggplot(aes(variante)) + 
-        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
-        theme(legend.position = "none",
-              plot.title = element_text(hjust = 0.5),
-              axis.text.x = element_text(color = "black", size = 10),
-              axis.text.y = element_text(color = "black", size = 10)) +
-        labs(x = "Variante",
-             y = "Casos",
-             title = "Casos por variante")
-    } else{
+    if(input$var_resposta == "Óbitos"){
       dados %>% 
         filter(evolucao == "obito") %>% 
         ggplot(aes(variante)) + 
@@ -26,10 +16,80 @@ function(input, output) {
         theme(legend.position = "none",
               plot.title = element_text(hjust = 0.5),
               axis.text.x = element_text(color = "black", size = 10),
-              axis.text.y = element_text(color = "black", size = 10)) +
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
         labs(x = "Variante",
-             y = "Casos",
-             title = "Óbitos por variante")
+             y = "Óbitos")
+    }
+    else if(input$var_resposta == "Casos"){
+      dados %>% 
+        ggplot(aes(variante)) + 
+        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
+        theme(legend.position = "none",
+              plot.title = element_text(hjust = 0.5),
+              axis.text.x = element_text(color = "black", size = 10),
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
+        labs(x = "Variante",
+             y = "Casos")
+    }
+    else if(input$var_resposta == "UTI"){
+      dados %>% 
+        filter(uti == "sim") %>% 
+        ggplot(aes(variante)) + 
+        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
+        theme(legend.position = "none",
+              plot.title = element_text(hjust = 0.5),
+              axis.text.x = element_text(color = "black", size = 10),
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
+        labs(x = "Variante",
+             y = "UTI")
+    }
+    else if(input$var_resposta == "Febre"){
+      dados %>% 
+        filter(febre == "sim") %>% 
+        ggplot(aes(variante)) + 
+        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
+        theme(legend.position = "none",
+              plot.title = element_text(hjust = 0.5),
+              axis.text.x = element_text(color = "black", size = 10),
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
+        labs(x = "Variante",
+             y = "Febre")
+    }
+    else if(input$var_resposta == "Tosse"){
+      dados %>% 
+        filter(tosse == "sim") %>% 
+        ggplot(aes(variante)) + 
+        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
+        theme(legend.position = "none",
+              plot.title = element_text(hjust = 0.5),
+              axis.text.x = element_text(color = "black", size = 10),
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
+        labs(x = "Variante",
+             y = "Tosse")
+    }
+    else {
+      dados %>% 
+        filter(fadiga == "sim") %>% 
+        ggplot(aes(variante)) + 
+        geom_bar(fill = "aquamarine4", color = "gray50", width = 0.5) + 
+        theme(legend.position = "none",
+              plot.title = element_text(hjust = 0.5),
+              axis.text.x = element_text(color = "black", size = 10),
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
+        labs(x = "Variante",
+             y = "Fadiga")
     }
   })
   
@@ -44,7 +104,9 @@ function(input, output) {
                    colour = "red4",
                    linetype = 2) +
         theme(axis.text.x = element_text(color = "black", size = 10),
-              axis.text.y = element_text(color = "black", size = 10)) +
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
         annotate(
           x = in_gama,
           y = -Inf,
@@ -97,7 +159,9 @@ function(input, output) {
                    colour = "green4",
                    linetype = 2) +
         theme(axis.text.x = element_text(color = "black", size = 10),
-              axis.text.y = element_text(color = "black", size = 10)) +
+              axis.text.y = element_text(color = "black", size = 10),
+              axis.title.x = element_text(color = "black", size = 15),
+              axis.title.y = element_text(color = "black", size = 15)) +
         annotate(
           x = in_gama,
           y = -Inf,
@@ -140,5 +204,93 @@ function(input, output) {
           y = "N° de óbitos diários"
         )
     }
+  })
+  
+  tab1 <- reactive({
+    if(input$var_resposta == "Óbitos"){
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante,d1$evolucao),1)) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante,d2evolucao),1)) 
+      dados2$vacina <- "não"
+      dados1<- dados1 %>% filter(Var2 == "obito")
+      dados2<- dados2 %>% filter(Var2 == "obito")
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+    else if(input$var_resposta == "Casos"){
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante))) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante))) 
+      dados2$vacina <- "não"
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+    else if(input$var_resposta == "UTI"){
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante,d1$uti),1)) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante,d2$uti),1)) 
+      dados2$vacina <- "não"
+      dados1<- dados1 %>% filter(Var2 == "sim")
+      dados2<- dados2 %>% filter(Var2 == "sim")
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+    else if(input$var_resposta == "Febre"){
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante,d1$febre),1)) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante,d2$febre),1)) 
+      dados2$vacina <- "não"
+      dados1<- dados1 %>% filter(Var2 == "sim")
+      dados2<- dados2 %>% filter(Var2 == "sim")
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+    else if(input$var_resposta == "Tosse"){
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante,d1$tosse),1)) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante,d2$tosse),1)) 
+      dados2$vacina <- "não"
+      dados1<- dados1 %>% filter(Var2 == "sim")
+      dados2<- dados2 %>% filter(Var2 == "sim")
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+    else {
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante,d1$fadiga),1)) 
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante,d2$fadiga),1)) 
+      dados2$vacina <- "não"
+      dados1<- dados1 %>% filter(Var2 == "sim")
+      dados2<- dados2 %>% filter(Var2 == "sim")
+      dados <- rbind(dados1,dados2)
+      dados$Freq <- round(dados$Freq*100,2)
+      return(dados)
+    }
+  })
+  
+  output$prop <- highcharter::renderHighchart({
+    hchart(tab1(), type = "line",
+           hcaes(x = Var1,
+                 y = Freq, group = vacina,colour=vacina)) %>%
+      hc_xAxis(title = list(text = "Variantes")) %>%
+      hc_yAxis(title = list(text = "%")) %>%
+      hc_add_theme(hc_theme_elementary())
   })
 }
