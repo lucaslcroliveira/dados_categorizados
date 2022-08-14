@@ -136,7 +136,7 @@ function(input, output) {
   })
   
   output$serie <- renderPlot({
-    if(input$var_resposta == "Óbitos"){
+    if (input$var_resposta == "Óbitos") {
       dados %>%
         filter(evolucao == "obito") %>%
         group_by(DT_SIN_PRI) %>%
@@ -194,7 +194,7 @@ function(input, output) {
         labs(x = "Data do primeiro sintoma",
              y = "N° de óbitos diários")
     }
-    else if(input$var_resposta == "Casos"){
+    else if (input$var_resposta == "Casos") {
       dados %>%
         group_by(DT_SIN_PRI) %>%
         summarise(casos = n()) %>%
@@ -251,7 +251,7 @@ function(input, output) {
         labs(x = "Data do primeiro sintoma",
              y = "N° de casos diários")
     }
-    else if(input$var_resposta == "UTI"){
+    else if (input$var_resposta == "UTI") {
       dados %>%
         filter(uti == "sim") %>%
         group_by(DT_SIN_PRI) %>%
@@ -307,10 +307,10 @@ function(input, output) {
           geom = "label"
         ) +
         labs(x = "Data do primeiro sintoma",
-             y = "N° de 
+             y = "N° de
              internações em UTI")
     }
-    else if(input$var_resposta == "Suporte ventilatório"){
+    else if (input$var_resposta == "Suporte ventilatório") {
       dados %>%
         filter(suport_ven == "invasivo") %>%
         group_by(DT_SIN_PRI) %>%
@@ -368,7 +368,7 @@ function(input, output) {
         labs(x = "Data do primeiro sintoma",
              y = "N° de suporte ventilatório invasivo")
     }
-    else if(input$var_resposta == "Febre"){
+    else if (input$var_resposta == "Febre") {
       dados %>%
         filter(febre == "sim") %>%
         group_by(DT_SIN_PRI) %>%
@@ -426,7 +426,7 @@ function(input, output) {
         labs(x = "Data do primeiro sintoma",
              y = "N° de gest/puerp com febre")
     }
-    else if(input$var_resposta == "Tosse"){
+    else if (input$var_resposta == "Tosse") {
       dados %>%
         filter(tosse == "sim") %>%
         group_by(DT_SIN_PRI) %>%
@@ -574,9 +574,11 @@ function(input, output) {
     else if (input$var_resposta == "Suporte ventilatório") {
       d1 <- dados %>%  filter(vacina_cov == "sim")
       d2 <- dados %>%  filter(vacina_cov == "não")
-      dados1 <- data.frame(prop.table(table(d1$variante, d1$suport_ven), 1))
+      dados1 <-
+        data.frame(prop.table(table(d1$variante, d1$suport_ven), 1))
       dados1$vacina <- "sim"
-      dados2 <- data.frame(prop.table(table(d2$variante, d2$suport_ven), 1))
+      dados2 <-
+        data.frame(prop.table(table(d2$variante, d2$suport_ven), 1))
       dados2$vacina <- "não"
       dados1 <- dados1 %>% filter(Var2 == "invasivo")
       dados2 <- dados2 %>% filter(Var2 == "invasivo")
@@ -587,9 +589,11 @@ function(input, output) {
     else if (input$var_resposta == "UTI") {
       d1 <- dados %>%  filter(vacina_cov == "sim")
       d2 <- dados %>%  filter(vacina_cov == "não")
-      dados1 <- data.frame(prop.table(table(d1$variante, d1$uti), 1))
+      dados1 <-
+        data.frame(prop.table(table(d1$variante, d1$uti), 1))
       dados1$vacina <- "sim"
-      dados2 <- data.frame(prop.table(table(d2$variante, d2$uti), 1))
+      dados2 <-
+        data.frame(prop.table(table(d2$variante, d2$uti), 1))
       dados2$vacina <- "não"
       dados1 <- dados1 %>% filter(Var2 == "sim")
       dados2 <- dados2 %>% filter(Var2 == "sim")
