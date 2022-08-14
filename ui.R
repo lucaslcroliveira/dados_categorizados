@@ -51,9 +51,38 @@ navbarPage(
     "Regressão logística",
     icon = icon("th", lib = "glyphicon"),
     fluidPage(sidebarLayout(
-      sidebarPanel(),
-      mainPanel(verbatimTextOutput("anova"),
-                plotOutput("plot2"))
+      sidebarPanel(
+        width = 3,
+        "Regressão logística",
+        selectInput(
+          "var_resposta2",
+          "Selecione a variável resposta:",
+          c("Óbitos"="evolucao",
+            "Suporte ventilatório"="suport_ven",
+            "UTI"="uti",
+            "Febre"="febre",
+            "Tosse"="tosse",
+            "Fadiga"="fadiga")
+        )
+      ),
+      mainPanel(
+        width = 9,
+        tabsetPanel(
+          tabPanel(
+            "Modelo ajustado",
+            verbatimTextOutput("print1")
+            
+          ),
+          tabPanel(
+            "Diagnóstico",
+            h4(strong("Teste de Hosmer-Lemeshow")),
+            verbatimTextOutput("print2"),
+            hr(),
+            h4(strong("Gráfico de Envelope")),
+            plotOutput("hnpplot")
+          )
+        )
+      )
     ))
   )
 )

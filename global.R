@@ -9,7 +9,9 @@ theme_set(theme_light())
 options(knitr.kable.NA = '-')
 
 # Carregando a base de dados ----
-dados <- readRDS("dados6.rds" )
+dados <- readRDS("dados6.rds")
+
+
 
 # Somente COVID ----
 dados <- dados %>%
@@ -43,6 +45,17 @@ dados <- dados %>%
   )) %>%
   mutate(mes = month(dt_sint))
 
+
+dados <- dados %>% 
+  rename(vacina_cov1=vacina_cov) %>% 
+  mutate(vacina_cov = case_when(
+    variante == "original" ~ "não",
+    vacina_cov1 == "sim" ~ "sim",
+    vacina_cov1 == "não" 
+    ~ "não",
+    TRUE ~ NA_character_
+  ))
+
 dados <- dados %>%
   mutate(vacina_cov = ifelse(variante == "original", "não", vacina_cov))
 
@@ -66,23 +79,11 @@ dados <- dados %>%
 
 # Alterações iniciais na base ----
 
-## Reajuste de levels ----
-dados$faixa_et <- factor(dados$faixa_et,
-                         levels = c("<20", "20-34", ">=35"))
-
-dados$escol <- factor(dados$escol,
-                      levels = c("sem escol", "fund1", "fund2", "medio", "superior"))
 
 dados$suport_ven <- factor(dados$suport_ven,
                            levels = c("não", "não invasivo", "invasivo"))
 
-## Restante de alterações ----
-dados$raca_sel <- dados$raca
-dados$raca_sel <-
-  ifelse(is.na(dados$raca_sel), "não informado", dados$raca_sel)
 
-dados$vacina_cov_sel <-
-  ifelse(is.na(dados$vacina_cov), "nao informado", dados$vacina_cov)
 
 dados$CLASSI_FIN <- as.factor(dados$CLASSI_FIN)
 
@@ -111,3 +112,4 @@ dados <- dados %>%
 
 dados$vacinacov_variante <-
   as.factor(dados$vacina_cov2 * dados$variante2)
+

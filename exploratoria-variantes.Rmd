@@ -19,7 +19,8 @@ library(summarytools)
 library(modelsummary)
 library(glmtoolbox)
 library(hnp)
-library(LDdiag)
+library(dplyr)
+#library(LDdiag)
 theme_set(theme_minimal())
 ```
 
@@ -83,6 +84,16 @@ dados <- dados %>%
       TRUE ~ "não informado"
     )
   )
+
+dados <- dados %>% 
+  rename(vacina_cov1=vacina_cov) %>% 
+  mutate(vacina_cov = case_when(
+    variante == "original" ~ "não",
+    vacina_cov1 == "sim" ~ "sim",
+    vacina_cov1 == "não" 
+    ~ "não",
+    TRUE ~ NA_character_
+  ))
 
 # Alterações iniciais na base ----
 
@@ -518,7 +529,7 @@ hltest(mod1) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod1) # Teste de ligação
+#LDdiag::pregibon.glm(mod1) # Teste de ligação
 ```
 ```{r}
 hnp(mod1)
@@ -537,7 +548,7 @@ hltest(mod2) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod2) # Teste de ligação
+#LDdiag::pregibon.glm(mod2) # Teste de ligação
 ```
 
 ```{r}
@@ -558,7 +569,7 @@ hltest(mod3) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod3) # Teste de ligação
+#LDdiag::pregibon.glm(mod3) # Teste de ligação
 ```
 
 ```{r}
@@ -579,7 +590,7 @@ hltest(mod4) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod4) # Teste de ligação
+#LDdiag::pregibon.glm(mod4) # Teste de ligação
 ```
 
 ```{r}
@@ -599,7 +610,7 @@ hltest(mod5) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod5) # Teste de ligação
+#LDdiag::pregibon.glm(mod5) # Teste de ligação
 ```
 
 ```{r}
@@ -619,7 +630,7 @@ hltest(mod6) #Teste de Hosmer e Lemeshow
 ```
 
 ```{r}
-LDdiag::pregibon.glm(mod6) # Teste de ligação
+#LDdiag::pregibon.glm(mod6) # Teste de ligação
 ```
 
 ```{r}
