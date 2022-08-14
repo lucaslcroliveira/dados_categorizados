@@ -552,7 +552,7 @@ function(input, output) {
         data.frame(prop.table(table(d1$variante, d1$evolucao), 1))
       dados1$vacina <- "sim"
       dados2 <-
-        data.frame(prop.table(table(d2$variante, d2evolucao), 1))
+        data.frame(prop.table(table(d2$variante, d2$evolucao), 1))
       dados2$vacina <- "não"
       dados1 <- dados1 %>% filter(Var2 == "obito")
       dados2 <- dados2 %>% filter(Var2 == "obito")
