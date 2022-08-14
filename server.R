@@ -61,6 +61,24 @@ function(input, output) {
         labs(x = "Variante",
              y = "UTI")
     }
+    else if (input$var_resposta == "Suporte ventilatório") {
+      dados %>%
+        filter(suport_ven == "invasivo") %>%
+        ggplot(aes(variante)) +
+        geom_bar(fill = "aquamarine4",
+                 color = "gray50",
+                 width = 0.5) +
+        theme(
+          legend.position = "none",
+          plot.title = element_text(hjust = 0.5),
+          axis.text.x = element_text(color = "black", size = 10),
+          axis.text.y = element_text(color = "black", size = 10),
+          axis.title.x = element_text(color = "black", size = 15),
+          axis.title.y = element_text(color = "black", size = 15)
+        ) +
+        labs(x = "Variante",
+             y = "Suporte ventilatório")
+    }
     else if (input$var_resposta == "Febre") {
       dados %>%
         filter(febre == "sim") %>%
@@ -289,7 +307,66 @@ function(input, output) {
           geom = "label"
         ) +
         labs(x = "Data do primeiro sintoma",
-             y = "N° de internações em UTI")
+             y = "N° de 
+             internações em UTI")
+    }
+    else if(input$var_resposta == "Suporte ventilatório"){
+      dados %>%
+        filter(suport_ven == "invasivo") %>%
+        group_by(DT_SIN_PRI) %>%
+        summarise(obitos = n()) %>%
+        ggplot(aes(DT_SIN_PRI, obitos)) +
+        geom_line() +
+        geom_vline(xintercept = in_gama,
+                   colour = "green4",
+                   linetype = 2) +
+        theme(
+          axis.text.x = element_text(color = "black", size = 10),
+          axis.text.y = element_text(color = "black", size = 10),
+          axis.title.x = element_text(color = "black", size = 15),
+          axis.title.y = element_text(color = "black", size = 15)
+        ) +
+        annotate(
+          x = in_gama,
+          y = -Inf,
+          label = "Gama",
+          vjust = -0.5,
+          geom = "label"
+        ) +
+        geom_vline(xintercept = in_delta,
+                   colour = "purple4",
+                   linetype = 3) +
+        annotate(
+          x = in_delta,
+          y = +Inf,
+          label = "Delta",
+          vjust = 2,
+          geom = "label"
+        ) +
+        geom_vline(xintercept = in_omicron,
+                   colour = "yellow4",
+                   linetype = 4) +
+        annotate(
+          x = in_omicron,
+          y = +Inf,
+          label = "Omicron",
+          vjust = 2,
+          geom = "label"
+        )  +
+        geom_vline(
+          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
+          colour = "green4",
+          linetype = 5
+        ) +
+        annotate(
+          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
+          y = -Inf,
+          label = "Vacinação",
+          vjust = -0.5,
+          geom = "label"
+        ) +
+        labs(x = "Data do primeiro sintoma",
+             y = "N° de suporte ventilatório invasivo")
     }
     else if(input$var_resposta == "Febre"){
       dados %>%
@@ -490,6 +567,19 @@ function(input, output) {
       dados1$vacina <- "sim"
       dados2 <- data.frame(prop.table(table(d2$variante)))
       dados2$vacina <- "não"
+      dados <- rbind(dados1, dados2)
+      dados$Freq <- round(dados$Freq * 100, 2)
+      return(dados)
+    }
+    else if (input$var_resposta == "Suporte ventilatório") {
+      d1 <- dados %>%  filter(vacina_cov == "sim")
+      d2 <- dados %>%  filter(vacina_cov == "não")
+      dados1 <- data.frame(prop.table(table(d1$variante, d1$suport_ven), 1))
+      dados1$vacina <- "sim"
+      dados2 <- data.frame(prop.table(table(d2$variante, d2$suport_ven), 1))
+      dados2$vacina <- "não"
+      dados1 <- dados1 %>% filter(Var2 == "invasivo")
+      dados2 <- dados2 %>% filter(Var2 == "invasivo")
       dados <- rbind(dados1, dados2)
       dados$Freq <- round(dados$Freq * 100, 2)
       return(dados)
