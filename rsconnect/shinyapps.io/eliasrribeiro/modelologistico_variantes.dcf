@@ -1,0 +1,14 @@
+name: modelologistico_variantes
+title: modelologistico_variantes
+username:
+account: eliasrribeiro
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6784559
+bundleId: 6201268
+url: https://eliasrribeiro.shinyapps.io/modelologistico_variantes/
+when: 1660524051.05229
+lastSyncTime: 1660524051.05229
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: exercicio_extra.html|exercicio_extra.pdf|exercicio_extra.Rmd|exploratoria-variantes.html|exploratoria-variantes.pdf|exploratoria-variantes.Rmd|hnp23.png|hnp3,2.png|prova2.html|prova2.pdf|prova2.Rmd|Rplot.png|Rplot01.png
