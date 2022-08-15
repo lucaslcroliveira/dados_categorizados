@@ -6,7 +6,7 @@ output:
   pdf_document: default
   html_document: default
 editor_options:
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -148,21 +148,15 @@ dados$vacinacov_variante <-
 
 ```{r}
 dados %>%
-  select(
+  dplyr::select(
     variante,
-    vacina_cov_sel,
+    vacina_cov,
     evolucao,
     suport_ven,
     uti,
-    inf_inter,
-    asma,
-    cardiopati,
-    hematologi,
-    diabetes,
-    pneumopati,
-    imunodepre,
-    obesidade,
-    renal
+    febre, 
+    tosse, 
+    fadiga
   ) %>%
   dfSummary(
     .,
