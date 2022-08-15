@@ -11,8 +11,6 @@ options(knitr.kable.NA = '-')
 # Carregando a base de dados ----
 dados <- readRDS("dados6.rds")
 
-
-
 # Somente COVID ----
 dados <- dados %>%
   filter(CLASSI_FIN == "5")
