@@ -5,19 +5,19 @@ library(xtable)
 library(knitr)
 
 navbarPage(
-  "Dados categorizados",
+  "EFEITOS DAS VARIANTES DO COVID-19 NA POPULAÇÃO MATERNA",
   tabPanel(
-    "Descritiva",
+    "Análise Descritiva",
     icon = icon("bar-chart-o"),
     fluidPage(
-      theme = shinythemes::shinytheme("flatly"),
+      theme = shinythemes::shinytheme("yeti"),
       sidebarLayout(
         sidebarPanel(
           width = 3,
-          "Descritiva",
+          #"Descritiva",
           selectInput(
             "var_resposta",
-            "Selecione a variável resposta:",
+            h5("Selecione a variável resposta:"),
             c("Casos",
               "Óbitos",
               "Suporte ventilatório",
@@ -40,7 +40,10 @@ navbarPage(
             ),
             tabPanel(
               "Vacinados x Não vacinados",
-              highcharter::highchartOutput("prop", height = "550px")
+              highcharter::highchartOutput("prop", height = "550px"),
+              fluidPage(
+                includeMarkdown("descricao_graf.md")
+              )
             )
           )
         )
@@ -48,15 +51,15 @@ navbarPage(
     )
   ),
   tabPanel(
-    "Regressão logística",
+    "Modelo de Regressão Logística",
     icon = icon("th", lib = "glyphicon"),
     fluidPage(sidebarLayout(
       sidebarPanel(
         width = 3,
-        "Regressão logística",
+        #"Modelo de Regressão Logística",
         selectInput(
           "var_resposta2",
-          "Selecione a variável resposta:",
+          h5("Selecione a variável resposta:"),
           c("Óbitos"="evolucao",
             "Suporte ventilatório"="suport_ven",
             "UTI"="uti",
@@ -66,10 +69,10 @@ navbarPage(
         )
       ),
       mainPanel(
-        width = 9,
+        width = 5,
         tabsetPanel(
           tabPanel(
-            "Modelo ajustado",
+            "Ajuste",
             verbatimTextOutput("print1")
             
           ),
@@ -83,6 +86,16 @@ navbarPage(
           )
         )
       )
-    ))
+    )
+    )
+  ),
+  tabPanel(
+    "Sobre",
+    icon = icon("info-sign", 
+                lib = "glyphicon"),
+    fluidPage(
+       includeMarkdown("sobre.md")
+    )
   )
+  
 )
