@@ -78,14 +78,14 @@ navbarPage(
           tabPanel(
             "Diagnóstico",
             column(
-              width = 4,
+              width = 6,
               h4(strong("Teste de Hosmer-Lemeshow")),
               verbatimTextOutput("print2")
             ),
             column(
-              width = 5,
+              width = 3,
               h4(strong("Gráfico de Envelope")),
-              plotOutput("hnpplot", width = "170%", height = "550px")
+              plotOutput("hnpplot", width = "230%", height = "550px")
             )
           )
         )
