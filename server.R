@@ -7,14 +7,17 @@ library(patchwork)
 library(highcharter)
 library(glmtoolbox)
 library(hnp)
+library(viridisLite)
+cols <- viridis(3)
+cols <- substr(cols, 0, 7)
 
 function(input, output) {
-  output$barplot <- renderPlot({
+  output$barplot <- plotly::renderPlotly({
     if (input$var_resposta == "Óbitos") {
-      dados %>%
+      p <- dados %>%
         filter(evolucao == "obito") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -29,9 +32,9 @@ function(input, output) {
              y = "Óbitos")
     }
     else if (input$var_resposta == "Casos") {
-      dados %>%
+      p <- dados %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -46,10 +49,10 @@ function(input, output) {
              y = "Casos")
     }
     else if (input$var_resposta == "UTI") {
-      dados %>%
+      p <- dados %>%
         filter(uti == "sim") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -64,10 +67,10 @@ function(input, output) {
              y = "UTI")
     }
     else if (input$var_resposta == "Suporte ventilatório") {
-      dados %>%
+      p <- dados %>%
         filter(suport_ven == "invasivo") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -82,10 +85,10 @@ function(input, output) {
              y = "Suporte ventilatório")
     }
     else if (input$var_resposta == "Febre") {
-      dados %>%
+      p <- dados %>%
         filter(febre == "sim") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -100,10 +103,10 @@ function(input, output) {
              y = "Febre")
     }
     else if (input$var_resposta == "Tosse") {
-      dados %>%
+      p <- dados %>%
         filter(tosse == "sim") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -118,10 +121,10 @@ function(input, output) {
              y = "Tosse")
     }
     else {
-      dados %>%
+      p <- dados %>%
         filter(fadiga == "sim") %>%
         ggplot(aes(variante)) +
-        geom_bar(fill = "aquamarine4",
+        geom_bar(fill = viridis(1),
                  color = "gray50",
                  width = 0.5) +
         theme(
@@ -135,414 +138,247 @@ function(input, output) {
         labs(x = "Variante",
              y = "Fadiga")
     }
+    
+    plotly::ggplotly(p)
   })
   
-  output$serie <- renderPlot({
+  output$serie <- plotly::renderPlotly({
     if(input$var_resposta == "Óbitos"){
-      dados %>%
-        filter(evolucao == "obito") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de óbitos diários")
+      plotly::ggplotly(dados %>%
+                         filter(evolucao == "obito") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(obitos = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, obitos)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else if(input$var_resposta == "Casos"){
-      dados %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(casos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, casos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "red4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de casos diários")
+      plotly::ggplotly(dados %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(casos = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, casos)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else if(input$var_resposta == "UTI"){
-      dados %>%
-        filter(uti == "sim") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de 
-             internações em UTI")
+      plotly::ggplotly(dados %>%
+                         filter(uti == "sim") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(freq_uti = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, freq_uti)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else if(input$var_resposta == "Suporte ventilatório"){
-      dados %>%
-        filter(suport_ven == "invasivo") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de suporte ventilatório invasivo")
+      plotly::ggplotly(dados %>%
+                         filter(suport_ven == "invasivo") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(freq_suport_ven = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, freq_suport_ven)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else if(input$var_resposta == "Febre"){
-      dados %>%
-        filter(febre == "sim") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de gest/puerp com febre")
+      plotly::ggplotly(dados %>%
+                         filter(febre == "sim") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(freq_febre = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, freq_febre)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else if(input$var_resposta == "Tosse"){
-      dados %>%
-        filter(tosse == "sim") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de gest/puerp com tosse")
+      plotly::ggplotly(dados %>%
+                         filter(tosse == "sim") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(freq_tosse = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, freq_tosse)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
     else {
-      dados %>%
-        filter(fadiga == "sim") %>%
-        group_by(DT_SIN_PRI) %>%
-        summarise(obitos = n()) %>%
-        ggplot(aes(DT_SIN_PRI, obitos)) +
-        geom_line() +
-        geom_vline(xintercept = in_gama,
-                   colour = "green4",
-                   linetype = 2) +
-        theme(
-          axis.text.x = element_text(color = "black", size = 10),
-          axis.text.y = element_text(color = "black", size = 10),
-          axis.title.x = element_text(color = "black", size = 15),
-          axis.title.y = element_text(color = "black", size = 15)
-        ) +
-        annotate(
-          x = in_gama,
-          y = -Inf,
-          label = "Gama",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_delta,
-                   colour = "purple4",
-                   linetype = 3) +
-        annotate(
-          x = in_delta,
-          y = +Inf,
-          label = "Delta",
-          vjust = 2,
-          geom = "label"
-        ) +
-        geom_vline(xintercept = in_omicron,
-                   colour = "yellow4",
-                   linetype = 4) +
-        annotate(
-          x = in_omicron,
-          y = +Inf,
-          label = "Omicron",
-          vjust = 2,
-          geom = "label"
-        )  +
-        geom_vline(
-          xintercept = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          colour = "green4",
-          linetype = 5
-        ) +
-        annotate(
-          x = as.Date("01-05-2021", format = "%d-%m-%Y"),
-          y = -Inf,
-          label = "Vacinação",
-          vjust = -0.5,
-          geom = "label"
-        ) +
-        labs(x = "Data do primeiro sintoma",
-             y = "N° de gest/puerp com fadiga")
+      plotly::ggplotly(dados %>%
+                         filter(fadiga == "sim") %>%
+                         group_by(DT_SIN_PRI) %>%
+                         summarise(freq_fadiga = n()) %>%
+                         ggplot(aes(DT_SIN_PRI, freq_fadiga)) +
+                         geom_line() +
+                         geom_vline(aes(xintercept = as.numeric(in_gama),
+                                        colour = "Gama"),
+                                    linetype = 2) +
+                         theme(
+                           axis.text.x = element_text(color = "black", size = 10),
+                           axis.text.y = element_text(color = "black", size = 10),
+                           axis.title.x = element_text(color = "black", size = 15),
+                           axis.title.y = element_text(color = "black", size = 15)
+                         ) +
+                         geom_vline(aes(xintercept = as.numeric(in_delta),
+                                        colour = "Delta"),
+                                    linetype = 3) +
+                         geom_vline(aes(xintercept = as.numeric(in_omicron),
+                                        colour = "Omicron"),
+                                    linetype = 4) +
+                         geom_vline(aes(xintercept = as.numeric(as.Date("01-05-2021", format = "%d-%m-%Y")),
+                                        colour = "Vacinacao"),
+                                    linetype = 5) +
+                         labs(
+                           x = "Data do primeiro sintoma",
+                           y = "N° de casos diários"
+                         ) +
+                         scale_color_manual(name = "Variantes", values = c(Gama = viridis(4)[1], 
+                                                                           Vacinacao = viridis(4)[2],
+                                                                           Omicron = viridis(4)[3],
+                                                                           Delta = viridis(4)[4])))
     }
   })
   
@@ -657,7 +493,8 @@ function(input, output) {
            )) %>%
       hc_xAxis(title = list(text = "Variantes")) %>%
       hc_yAxis(title = list(text = "%")) %>%
-      hc_add_theme(hc_theme_elementary())
+      hc_add_theme(hc_theme_elementary()) %>% 
+      hc_colors(cols)
   })
   
   output$print1 <- renderPrint({

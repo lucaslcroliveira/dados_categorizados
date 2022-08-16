@@ -5,7 +5,7 @@ library(xtable)
 library(knitr)
 
 navbarPage(
-  "EFEITOS DAS VARIANTES DO COVID-19 NA POPULAÇÃO MATERNA",
+  "EFEITO DAS VARIANTES DO COVID-19 NA POPULAÇÃO MATERNA",
   tabPanel(
     "Análise Descritiva",
     icon = icon("bar-chart-o"),
@@ -32,11 +32,11 @@ navbarPage(
           tabsetPanel(
             tabPanel(
               "Frequência",
-              plotOutput("barplot", width = "100%", height = "550px")
+              plotly::plotlyOutput("barplot", width = "100%", height = "550px")
             ),
             tabPanel(
               "Série",
-              plotOutput("serie", width = "100%", height = "550px")
+              plotly::plotlyOutput("serie", width = "100%", height = "550px")
             ),
             tabPanel(
               "Vacinados x Não vacinados",
@@ -69,20 +69,24 @@ navbarPage(
         )
       ),
       mainPanel(
-        width = 5,
+        width = 9,
         tabsetPanel(
           tabPanel(
             "Ajuste",
             verbatimTextOutput("print1")
-            
           ),
           tabPanel(
             "Diagnóstico",
-            h4(strong("Teste de Hosmer-Lemeshow")),
-            verbatimTextOutput("print2"),
-            hr(),
-            h4(strong("Gráfico de Envelope")),
-            plotOutput("hnpplot")
+            column(
+              width = 4,
+              h4(strong("Teste de Hosmer-Lemeshow")),
+              verbatimTextOutput("print2")
+            ),
+            column(
+              width = 5,
+              h4(strong("Gráfico de Envelope")),
+              plotOutput("hnpplot", width = "170%", height = "550px")
+            )
           )
         )
       )

@@ -6,7 +6,6 @@ library(patchwork)
 library(xtable)
 library(knitr)
 theme_set(theme_light())
-options(knitr.kable.NA = '-')
 
 # Carregando a base de dados ----
 dados <- readRDS("dados6.rds")
